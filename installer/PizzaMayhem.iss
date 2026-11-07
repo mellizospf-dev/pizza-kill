@@ -3,8 +3,8 @@ AppId={{A6B10A2E-FA20-4C8A-AC5D-7B3B9F2C4011}
 AppName=ULTRAKILL: Pizza Mayhem
 AppVersion=0.1.0
 AppPublisher=mellizospf-dev
-DefaultDirName={code:GetGameDir}
-DisableDirPage=no
+DefaultDirName={autopf}\Steam\steamapps\common\ULTRAKILL
+DisableDirPage=yes
 DirExistsWarning=no
 OutputDir=..\dist
 OutputBaseFilename=PizzaMayhem-Setup
@@ -26,21 +26,18 @@ begin
   if GameDirPage <> nil then
     Result := GameDirPage.Values[0]
   else
-    Result := '';
+    Result := ExpandConstant('{autopf}\Steam\steamapps\common\ULTRAKILL');
 end;
 
 procedure InitializeWizard;
-var
-  DefaultGameDir: String;
 begin
-  DefaultGameDir := ExpandConstant('{autopf}\Steam\steamapps\common\ULTRAKILL');
-  GameDirPage := CreateInputDirPage(wpSelectDir,
+  GameDirPage := CreateInputDirPage(wpWelcome,
     'Select ULTRAKILL folder',
     'Choose the folder containing ULTRAKILL.exe',
     'The installer places Pizza Mayhem in BepInEx\plugins and does not modify original game files.',
     False, '');
   GameDirPage.Add('ULTRAKILL installation folder:');
-  GameDirPage.Values[0] := DefaultGameDir;
+  GameDirPage.Values[0] := ExpandConstant('{autopf}\Steam\steamapps\common\ULTRAKILL');
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
