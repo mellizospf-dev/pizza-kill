@@ -29,6 +29,7 @@ namespace PizzaMayhem
         private float originalWalkSpeed;
         private float originalJumpPower;
         private bool originalsCaptured;
+        private bool walkSpeedCaptured;
         private float machCharge;
         private float comboTimer;
         private int comboScore;
@@ -110,8 +111,10 @@ namespace PizzaMayhem
                     instance = instanceField.GetValue(null);
             }
 
-            if (instance == null || instance == movementInstance)
-                return instance != null && originalsCaptured;
+            if (instance == null)
+                return false;
+            if (instance == movementInstance)
+                return walkSpeedCaptured;
 
             RestoreOriginals();
             movementInstance = instance;
@@ -131,6 +134,7 @@ namespace PizzaMayhem
                 return false;
             }
 
+            walkSpeedCaptured = true;
             originalsCaptured = TryRead(jumpPowerField, jumpPowerProperty, out originalJumpPower);
             if (!originalsCaptured)
                 originalJumpPower = 0f;
@@ -188,13 +192,15 @@ namespace PizzaMayhem
 
         private void RestoreOriginals()
         {
-            if (movementInstance != null && originalsCaptured)
+            if (movementInstance != null && walkSpeedCaptured)
             {
                 TryWrite(walkSpeedField, walkSpeedProperty, originalWalkSpeed);
-                if (originalJumpPower > 0f)
+                if (originalsCaptured && originalJumpPower > 0f)
                     TryWrite(jumpPowerField, jumpPowerProperty, originalJumpPower);
             }
+            walkSpeedCaptured = false;
             originalsCaptured = false;
+            movementInstance = null;
         }
 
         private void OnGUI()
